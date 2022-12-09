@@ -11,6 +11,7 @@ func main() {
 	router := gin.Default()
 
 	router.POST("/namespace", controller.CreateNameSpace)
+	router.GET("/namespace", controller.ListNameSpace)
 
 	router.Run()
 }
