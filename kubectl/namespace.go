@@ -67,3 +67,13 @@ func ListNameSpace() (namesapceList *apiv1.NamespaceList, err error) {
 	fmt.Printf("list namespace %#v \n", namesapceList)
 	return
 }
+
+func DeleteNameSpace(name string) (err error) {
+	clientset, err := kubeConfig()
+	if err != nil {
+		fmt.Printf("Config error: %v", err.Error())
+		return
+	}
+	namespaceClient := clientset.CoreV1().Namespaces()
+	return namespaceClient.Delete(context.TODO(), name, metav1.DeleteOptions{})
+}

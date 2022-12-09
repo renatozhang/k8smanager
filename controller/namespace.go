@@ -37,3 +37,19 @@ func ListNameSpace(ctx *gin.Context) {
 		"result":  namespaceList,
 	})
 }
+
+func DeleteNameSpace(ctx *gin.Context) {
+	var namesapce common.Namespace
+	err := ctx.ShouldBindJSON(&namesapce)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	fmt.Println(namesapce.Name)
+	err = kubectl.DeleteNameSpace(namesapce.Name)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "delete namespace success"})
+}

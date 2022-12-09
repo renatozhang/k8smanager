@@ -12,6 +12,7 @@ func main() {
 
 	router.POST("/namespace", controller.CreateNameSpace)
 	router.GET("/namespace", controller.ListNameSpace)
+	router.DELETE("/namespace", controller.DeleteNameSpace)
 
 	router.Run()
 }
