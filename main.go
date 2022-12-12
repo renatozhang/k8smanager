@@ -21,5 +21,6 @@ func main() {
 	router.POST("/deploy/scale", controller.ScaleDeployment)
 	router.POST("/deploy/update", controller.UpgradeDeployment)
 	router.DELETE("/deploy", controller.DeleteDeployment)
+	router.GET("/deploy/pod", controller.GetPods)
 	router.Run()
 }

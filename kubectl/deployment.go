@@ -5,10 +5,19 @@ import (
 	"fmt"
 	"k8smanager/common"
 
-	v1 "k8s.io/api/apps/v1"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/util/retry"
 )
+
+func getLabels(selector *metav1.LabelSelector) (labelSelector string) {
+	for k, v := range selector.MatchLabels {
+		labelSelector = fmt.Sprintf("%s=%s", k, v)
+	}
+	// fmt.Println(labelSelector)
+	return
+}
 
 func CreateDeployment(deploy *common.Deploy) (err error) {
 	clientset, err := kubeConfig()
@@ -72,7 +81,7 @@ func CreateDeployment(deploy *common.Deploy) (err error) {
 	return
 }
 
-func ListDeployment() (deploymentList *v1.DeploymentList, err error) {
+func ListDeployment() (deploymentList *appsv1.DeploymentList, err error) {
 	clientset, err := kubeConfig()
 	if err != nil {
 		fmt.Printf("Config error: %v", err.Error())
@@ -93,7 +102,7 @@ func ListDeployment() (deploymentList *v1.DeploymentList, err error) {
 	return
 }
 
-func GetDeployment(app string) (deploymet *v1.Deployment, err error) {
+func GetDeployment(app string) (deploymet *appsv1.Deployment, err error) {
 	clientset, err := kubeConfig()
 	if err != nil {
 		fmt.Printf("Config error: %v", err.Error())
@@ -187,5 +196,32 @@ func DeleteDeployment(deploy *common.Deploy) (err error) {
 		return
 	}
 	fmt.Printf("Delete deployment %s success!", deploy.App)
+	return
+}
+
+func GetPods(app string) (podList *corev1.PodList, err error) {
+	clientset, err := kubeConfig()
+	if err != nil {
+		fmt.Printf("Config error: %v", err.Error())
+		return
+	}
+
+	// 得到deployment
+	deployment, err := GetDeployment(app)
+	if err != nil {
+		fmt.Printf("Failed to get Deployment: %v", err)
+		return
+	}
+	listOpt := metav1.ListOptions{
+		LabelSelector: getLabels(deployment.Spec.Selector),
+	}
+
+	// podList, err = clientset.CoreV1().Pods(deployment.ObjectMeta.Namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: "app=tomcat1-8.5.16-jre8"})
+	podList, err = clientset.CoreV1().Pods(deployment.ObjectMeta.Namespace).List(context.TODO(), listOpt)
+
+	if err != nil {
+		fmt.Printf("Failed to get podList: %v", err)
+		return
+	}
 	return
 }

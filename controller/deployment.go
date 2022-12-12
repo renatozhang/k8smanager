@@ -77,5 +77,17 @@ func DeleteDeployment(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "delete deploy success"})
+}
 
+func GetPods(ctx *gin.Context) {
+	app := ctx.Query("app")
+	if app == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"err": "参数错误"})
+		return
+	}
+	podList, err := kubectl.GetPods(app)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"err": err})
+	}
+	ctx.JSON(http.StatusOK, podList)
 }

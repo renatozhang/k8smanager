@@ -15,7 +15,7 @@ import (
 func kubeConfig() (clientset *kubernetes.Clientset, err error) {
 	if home := homedir.HomeDir(); home != "" {
 		kubeconfig := filepath.Join(home, ".kube", "config")
-		fmt.Println(kubeconfig)
+		// fmt.Println(kubeconfig)
 		config, errRet := clientcmd.BuildConfigFromFlags("", kubeconfig)
 		if err != nil {
 			fmt.Println("Out cluster config error")
