@@ -88,7 +88,7 @@ func ListDeployment() (deploymentList *v1.DeploymentList, err error) {
 		return
 	}
 
-	fmt.Printf("Create deployment %s \n", deploymentList)
+	fmt.Printf("List deployment %s \n", deploymentList)
 
 	return
 }
@@ -169,5 +169,23 @@ func UpgradeDeployment(deploy *common.Deploy) (err error) {
 
 	}
 	fmt.Printf("update deployment %s, tag:%s \n", deploy.App, deploy.Tag)
+	return
+}
+
+func DeleteDeployment(deploy *common.Deploy) (err error) {
+	clientset, err := kubeConfig()
+	if err != nil {
+		fmt.Printf("Config error: %v", err.Error())
+		return
+	}
+	// 得到deployment的客户端
+	deploymentClient := clientset.AppsV1().Deployments("default")
+	deletePolicy := metav1.DeletePropagationForeground
+	err = deploymentClient.Delete(context.TODO(), deploy.App, metav1.DeleteOptions{PropagationPolicy: &deletePolicy})
+	if err != nil {
+		fmt.Printf("Delete deployment %s failed, err:%v\n", deploy.App, err)
+		return
+	}
+	fmt.Printf("Delete deployment %s success!", deploy.App)
 	return
 }

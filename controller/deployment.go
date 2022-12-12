@@ -49,7 +49,7 @@ func ScaleDeployment(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "scale deploy success"})
 }
 
-func UpdateDeployment(ctx *gin.Context) {
+func UpgradeDeployment(ctx *gin.Context) {
 	var deployment common.Deploy
 	err := ctx.ShouldBindJSON(&deployment)
 	if err != nil {
@@ -61,5 +61,21 @@ func UpdateDeployment(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"message": "scale deploy success"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "upgrade deploy success"})
+}
+
+func DeleteDeployment(ctx *gin.Context) {
+	var deployment common.Deploy
+	err := ctx.ShouldBindJSON(&deployment)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	err = kubectl.DeleteDeployment(&deployment)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "delete deploy success"})
+
 }

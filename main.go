@@ -19,6 +19,7 @@ func main() {
 	router.POST("/deploy", controller.CreateDeployment)
 	router.GET("/deploy", controller.ListDeployment)
 	router.POST("/deploy/scale", controller.ScaleDeployment)
-	router.POST("/deploy/update", controller.UpdateDeployment)
+	router.POST("/deploy/update", controller.UpgradeDeployment)
+	router.DELETE("/deploy", controller.DeleteDeployment)
 	router.Run()
 }
