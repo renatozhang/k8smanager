@@ -23,3 +23,43 @@ func CreateDeployment(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "cereate deploy success"})
 }
+
+func ListDeployment(ctx *gin.Context) {
+
+	deploymentList, err := kubectl.ListDeployment()
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	ctx.JSON(http.StatusOK, deploymentList)
+}
+
+func ScaleDeployment(ctx *gin.Context) {
+	var deployment common.Deploy
+	err := ctx.ShouldBindJSON(&deployment)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	err = kubectl.ScaleDeployment(&deployment)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "scale deploy success"})
+}
+
+func UpdateDeployment(ctx *gin.Context) {
+	var deployment common.Deploy
+	err := ctx.ShouldBindJSON(&deployment)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	err = kubectl.UpgradeDeployment(&deployment)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "scale deploy success"})
+}

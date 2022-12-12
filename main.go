@@ -17,5 +17,8 @@ func main() {
 
 	// deployment
 	router.POST("/deploy", controller.CreateDeployment)
+	router.GET("/deploy", controller.ListDeployment)
+	router.POST("/deploy/scale", controller.ScaleDeployment)
+	router.POST("/deploy/update", controller.UpdateDeployment)
 	router.Run()
 }
